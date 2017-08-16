@@ -1,0 +1,35 @@
+{DataSet}
+DsVariable := ItsDsOpenQuery ('select');
+ItsInfo('Hola este es el resultado' + ItsFlAsString(DsVariable,'descripcion') 
+                                    +' '+ ItsFlAsString(DsVariable,'codigo') 
+                                    + ', muchas gracias' );
+
+{Devuelve un solo valor, por ejemplo: Un true or false/ números/caracteres}
+varible := ItsExecuteFlQuery('query');
+
+{Sin variable}
+ItsExecuteCommand('UPDATE/INSERTE/DELTE');
+
+DsMiVariable := ItsDsOpenQuery ('select * from ERP_EMPRESAS');
+
+DsVarible := ItsDsOpenQuery('select CLIENTE from ERP_EMPRESAS');
+
+while not DsVariable.EOF do begin
+
+//ItsFlCurvalue = Esto es leer a nivel general, en este caso un dataset. Siempre son dos parámetros.
+ItsFlCurValue(DsVariable,'CLIENTE')
+
+//ItsFlwCurvalue = Esto es para escribir un valor. Siempre son tres parámetros.
+ItsFlwCurValue(DsVariable,'CLIENTE', FALSE)
+
+//ItsFlAsSqlStr = Es para utilizar un valor determinado dentro de cualquier tipo de querys.
+ItsFlAsSqlStr(DsVariable,'id')
+
+
+  if ItsFlCurValue(DsVariable,'CLIENTE') = true then begin
+
+    ItsExecuteCommand('UPDATE ERP_EMPRESAS SET DESCRIPCION = ''ES cliente '' where ID = ' + ItsFlAsSqlStr(DsVariable,'id') ); 
+    //Booleanos es SiEMPRE TRUE, para los querys es 1.
+  end;
+  DsMiVariable.next;
+end;

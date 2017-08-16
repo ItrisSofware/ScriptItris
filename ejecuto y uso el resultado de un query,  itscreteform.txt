@@ -1,0 +1,24 @@
+
+{Genera la relación entre comprobantes de ventas partiendo del presupuesto, mostrando como resultado el pedido y la factura, sino devuelvo grilla vacía.}
+
+begin
+
+//Busco según el número de presupuesto el número de pedido generado.
+ sql :=  ('select '+
+         'D.FK_ERP_COM_VEN as FK_ERP_COM_VEN_D '+
+         'from ERP_DET_COM O '+
+         'join ERP_DET_COM D on D.FK_ERP_DET_COM = O.IDD '+
+         'join ERP_COM_VEN VO on VO.ID = O.FK_ERP_COM_VEN '+
+         'join ERP_COM_VEN VD on VD.ID = D.FK_ERP_COM_VEN '+
+         'where o.FK_ERP_COM_VEN = ' + ItsFlAsSqlStr(Delta, 'FK_ERP_COM_VEN') + ' ' +
+         'group by d.FK_ERP_COM_VEN, o.FK_ERP_COM_VEN');
+
+//Creo una variable y guardo el dataset.
+var1 := ItsExecuteFlQuery(sql);
+
+//Abro un formulario pasando como parámetro el resultado del query.
+ItsCreateForm('ERP_EN_BASE_VEN', 'FK_ERP_COM_VEN_O',  var1, true);
+
+//Por: Leo Condorí (lcondori@itris.com.ar)
+
+end;

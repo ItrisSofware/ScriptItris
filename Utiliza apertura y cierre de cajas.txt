@@ -1,0 +1,10 @@
+begin
+    if UpdateKind <> UkDelete then begin
+        if ItsFlCurValue(Delta, 'USA_APE_CIE_CAJ' ) = false then begin
+        Abierto := ItsExecuteFlQuery ('select top 1 ABIERTO from ERP_LOT_TES where ABIERTO = 1 ');
+               if Abierto = true then begin
+                  ItsRollBack('Existen cajas en Tesorería con número de lote sin cerrar, no puede desactivar "Utiliza apertura y cierre de caja". Las cajas deben estar todas cerradas. ');
+               end;
+        end;
+    end;
+end;

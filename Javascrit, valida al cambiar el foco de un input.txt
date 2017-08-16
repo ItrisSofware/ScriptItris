@@ -1,0 +1,23 @@
+    //Declaro un DIV para mostrar el resultado cuando detecto que el usuario presiona el botón dentro del input.
+	//Por default está deshabilitado.
+	<div id="kpress"></div>
+	
+	//Aqui el usuario ingresa el valor
+    <input type="text" id="txtEmpresas" />   
+
+//Eventos que valida la lógica.
+<script>
+    //function PressEmpresa(evento) {
+    //     $("#kpress").html("Empresa")
+    // }
+     $(document).ready(function(){
+         //Empresa
+         $("#txtEmpresas").keypress(function(){
+             $("#kpress").html("<p>Empresa</p>");
+         });
+         //$(document).keypress(PressEmpresa);
+         //$(document).onblur(Press);
+        //$(document).keydown(operaEvento);
+        //$(document).keyup(operaEvento);
+     })
+ </script>

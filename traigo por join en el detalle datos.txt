@@ -1,0 +1,27 @@
+begin
+  if ActFieldName = 'FK_ERP_COM_VEN' then begin
+
+        {dsDet := ItsDsGetDetail(Delta, 'ERP_DET_GUI_TRA');
+        dsDet.First;
+        while not dsDet. Eof do begin  }
+          SQL := ('select C.FK_ERP_EMPRESAS, e.TE as TELEFONO, e.FK_ERP_PROVINCIAS, ' +
+                ' p.DESCRIPCION as PROVINCIA, ' +
+                ' e.FK_ERP_TIP_DOC, ' +
+                ' td.DESCRIPCION as TIPDOCU ' +
+                ' from ERP_COM_VEN C ' +
+                ' join ERP_EMPRESAS e on C.FK_ERP_EMPRESAS=E.ID ' +
+                ' join ERP_PROVINCIAS p on e.FK_ERP_PROVINCIAS=p.ID ' +
+                ' join ERP_TIP_DOC TD on e.FK_ERP_TIP_DOC=td.ID ' +
+                ' where C.ID = ' + ItsFlAsSqlStr(Delta, 'FK_ERP_COM_VEN') );
+          ItsWriteLn(SQL);
+          Datos := ItsDsOpenQuery(SQL);
+
+          ItsFlWCurValue(Delta, '_TELEFONO', ItsFlCurValue(Datos, 'TELEFONO'));                                                                       
+          ItsFlWCurValue(Delta, '_PROVINCIA', ItsFlCurValue(Datos, 'PROVINCIA'));
+          ItsFlWCurValue(Delta, '_TIPDOCU', ItsFlCurValue(Datos, 'TIPDOCU'));
+
+          //dsDet.Next;
+        //end;
+  end;        
+
+end;

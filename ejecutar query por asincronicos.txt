@@ -1,0 +1,20 @@
+
+begin
+
+  {Busco los pedidos pendientes o autorizados con fechas mayor a 30 dias y les actualizo el estado}
+
+sql := ('update ERP_COM_VEN ' +
+        ' set ESTADO = ''X'' '+
+ ' where FK_ERP_T_COM_VEN = ''PED'' and (ESTADO = ''P'' or ESTADO=''A'') and FECHA <= GETDATE()-30 ');
+
+ItsExecuteCommand(Sql);
+
+    {se buscan los presupuestos que no son de licitacion y estan autorizados o pendientes y se anulan}
+sql := ('update ERP_COM_VEN ' +
+        ' set ESTADO = ''X'' '+
+ ' where FK_ERP_T_COM_VEN = ''PVE'' and (ESTADO = ''P'' or ESTADO=''A'') and FECHA <= GETDATE()-30 ');
+
+ItsExecuteCommand(Sql);
+
+
+End

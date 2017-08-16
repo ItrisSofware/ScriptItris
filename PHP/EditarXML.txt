@@ -1,0 +1,54 @@
+//TRABAJAR CON XML COMO STRING
+--Modificar un XML con SimpleXMLElement detalle.
+	$xml = new SimpleXMLElement($XMLData);
+		foreach($xml->ROWDATA->ROW as $f=>$val){
+			$val['DESCRIPCION'] = 'spec.pdf';
+		}
+	$output = $xml->asXML('spec.xml');
+
+--Modificar un datos XML en PHP.
+	//Cargo en memoria el string.
+	$xml = new SimpleXMLElement($XMLData);
+	
+	//Grabo la variable.
+	$xml->ROWDATA->ROW['DESCRIPCION'] = 'spec.pdf';
+	
+	//Lo grabo y lo asigno en una variable.
+	$output = $xml->asXML();
+	
+	
+//TRABAJAR CON XML fisicos.
+	    $XMLData = $ItsPrepareAppend['XMLData'];
+		$DataSession = $ItsPrepareAppend['DataSession'];
+		
+		//Me guardo el XML que generó para luego modificarlo y volverlo a mandar.
+		$now = date('Ymd-H-i-s');
+		$fp = fopen("ERP_EMP_ALT.xml", "a");
+		fwrite($fp, $XMLData. PHP_EOL);
+		fclose($fp);
+    
+		$ROW = new SimpleXMLElement('ERP_EMP_ALT.xml', null, true);
+		$ROW->ROWDATA->ROW['DESCRIPCION']=$razonsocial;
+		$ROW->ROWDATA->ROW['TE']=$tel;
+		$ROW->ROWDATA->ROW['EMAIL']=$email;
+		$ROW->ROWDATA->ROW['FK_ERP_TIP_DOC']=$tipodocumento;
+		$ROW->ROWDATA->ROW['Z_FK_ERP_TIP_DOC']='';
+		$ROW->ROWDATA->ROW['NUM_DOC']=$cuit;
+		$ROW->ROWDATA->ROW['CALLE']=$calle;
+		$ROW->ROWDATA->ROW['NUMERO']=$numero;
+		$ROW->ROWDATA->ROW['PISO']=$piso;
+		$ROW->ROWDATA->ROW['DEPTO']=$depto;
+		$ROW->ROWDATA->ROW['FK_ERP_LOCALIDADES']=$localidad;
+		$ROW->ROWDATA->ROW['CP']=$cp;
+		$ROW->ROWDATA->ROW['FK_ERP_PARTIDOS']=$partido;
+		$ROW->ROWDATA->ROW['FK_ERP_PROVINCIAS']=$provincia;
+		$ROW->ROWDATA->ROW['FK_ERP_PAISES']=$pais;
+		$ROW->ROWDATA->ROW['FK_ERP_CAT_IVA']=$categoria;	
+		$ROW->asXML('ERP_EMP_ALT.xml');
+
+	$iXMLData = file_get_contents('ERP_EMP_ALT.xml');
+	$fpp = fopen('leo.xml', "a");
+	fwrite($fpp, $iXMLData. PHP_EOL);
+	fclose($fpp);
+	
+	$ItsSetData = $client->call('ItsSetData', array('UserSession' => $session, 'DataSession' => $DataSession, 'iXMLData' => $iXMLData ) );	

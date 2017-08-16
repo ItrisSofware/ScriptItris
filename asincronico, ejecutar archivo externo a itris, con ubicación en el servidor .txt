@@ -1,0 +1,23 @@
+begin
+//Novedad 33562 || By Leo Condori
+
+  ItsSetUserInteraction(false);
+
+  Patch := 'c:\';
+  FileName := ItsExecuteFlQuery('select _NAME_FILE from ERP_PARAMETROS');
+  FechaHora := ItsExecuteFlQuery('select getdate()');
+
+  if FileName = '' then begin
+      ItsSaveFile('C:\LogHoraAFIP.txt','No existe nombre de archivo en parametros generales para ajecutar');
+  Exit;
+  end;
+
+  //Seteo servidor de AFIP 
+  sync := ItsExecuteFileWait(Patch+FileName, '');
+  if sync = true then
+        ItsSaveFile('C:\LogHoraAFIP.txt', ItsVarAsString(FechaHora) + 'Sincronizacion de la hora de Windows con el servidor AFIP realizado con exito.');
+  else
+        ItsSaveFile('C:\LogHoraAFIP.txt', ItsVarAsString(FechaHora) + 'No se pudo sincronizar la hora de windows con el servidor de AFIP.');
+
+  ItsSetUserInteraction(true);
+end;

@@ -1,0 +1,128 @@
+Funciones principales
+
+ItsWSCreate: Crea un objeto que se conecta al servicio web especificado
+Parametros
+aWSDL: cadena de caracteres que indica el WSDL del servicio web a consumir
+aService: cadena de caractes que indica el nombre del servicio a consumir
+aPort: cadena de caracteres que indica el nombre del puerto de tipo SOAP a consumir (en la mayoria de los servicios web este dato se puede obtener del nodo wsdl:service/wsdl:port/)
+
+ItsWSCallMethod: Ejecuta un metodo del servicio web y devuelve un string en formato XML con el resultado
+Parametros
+aMethodName: cadena de caracteres que indica el nombre del metodo a ejecutar del webservice
+aXMLParams: string con formato XML que contiene el nombre del metodo con todos los parametros que el mismo recibe en el formato especificado por el webservice consumido
+
+ItsWSCreateEx: Es igual a ItsWSCreate pero con un parámetro más al final en donde se le indica el encoding con el que va a trabajar con el servicio web. La funcion ItsWSCreate trabaja con encoding 'UTF-8'
+
+Funciones de apoyo (permiten manejar XML basicos)
+
+ItsWSXMLCreate: crea un objeto XML
+Parametros
+aXMLData: string con formato XML que indica el XML con el que se desea trabajar. Si esta vacio indica que se crea un XML nuevo
+
+ItsWSXMLAddElement: crea un nodo principal para el XML
+Parametros
+aXMLDoc: objeto XML creado con ItsWSXMLCreate
+aElementName: nombre del nodo principal del XML
+
+ItsWSXMLAddNode: crea un nodo para el XML
+Parametros
+aXMLNode: objeto creado por ItsWSXMLAddElement o ItsWSXMLAddNode al que se le desea agregar un nodo hijo
+aNodeName: nombre del nodo a agregar
+aNodeValue: valor del nodo a agregar
+
+ItsWSXMLGetNodeValue: devuelve el valor del nodo pasado por parametro
+Parametros
+aXMLNode: node del XML
+
+ItsWSXMLGetNodeName: devuelve el nombre del nodo pasado por parametro
+Parametros
+aXMLNode: nodo del XML
+
+ItsWSXMLFormat: devuelve un string con el contenido del XML formateado
+Parametros
+aXMLDoc: objeto creado por ItsWSXMLCreate
+
+ItsWSXMLGetElement: devuelve el nodo principal del XML
+Parametros
+aXMLDoc: objeto creado por ItsWSXMLCreate
+
+ItsWSXMLFindNode: busca y devuelve un nodo dentro del nodo pasado por parametro
+Parametros
+aXMLNode: nodo del XML
+aNodeName: nombre del nodo a buscar dentro de aXMLNode
+
+
+Ejemplo de uso
+El código corresponde a una acción que nos permite obtener el clima de un lugar determinado:
+
+begin
+  WS := ItsWSCreate('http://ws.cdyne.com/WeatherWS/Weather.asmx?wsdl', 'Weather', 'WeatherSoap');
+  try
+    aXMLDoc := ItsWSXMLCreate('');
+    aXMLNode := ItsWSXMLAddElement(aXMLDoc, 'GetCityWeatherByZIP');
+    ItsWSXMLAddNode(aXMLNode, 'ZIP', '91750');
+    strXML := ItsWSXMLFormat(aXMLDoc);
+    {lo anterior es equivalente a hacer esto:
+    strXML := '<GetCityWeatherByZIP>' + _NEWLINE +
+                 '<ZIP>91750</ZIP>' + _NEWLINE +
+              '</GetCityWeatherByZIP>';}
+
+    Res := ItsWSCallMethod(WS, 'GetCityWeatherByZIP', strXML);
+    ItsInfo(Res);
+
+    {parseo el xml para obtener los datos de la respuesta}
+    aXMLDoc := ItsWSXMLCreate(Res);
+    aXMLNode := ItsWSXMLGetElement(aXMLDoc);
+    aXMLNode := ItsWSXMLFindNode(aXMLNode, 'soap:Body');
+    ItsInfo(ItsWSXMLGetNodeName(aXMLNode));
+    aXMLNode := ItsWSXMLFindNode(aXMLNode, 'GetCityWeatherByZIPResponse');
+    ItsInfo(ItsWSXMLGetNodeName(aXMLNode));
+    aXMLNode := ItsWSXMLFindNode(aXMLNode, 'GetCityWeatherByZIPResult');
+    ItsInfo(ItsWSXMLGetNodeName(aXMLNode));
+    if ItsWSXMLGetNodeValue(ItsWSXMLFindNode(aXMLNode, 'Success')) then begin
+      auxStr := '';
+      auxStr := 'ResponseText = ' +
+        VartoStr(ItsWSXMLGetNodeValue(ItsWSXMLFindNode(aXMLNode, 'ResponseText')));
+      auxStr := auxStr + _NEWLINE;
+      auxStr := auxStr + 'State = ' +
+        VartoStr(ItsWSXMLGetNodeValue(ItsWSXMLFindNode(aXMLNode, 'State')));
+      auxStr := auxStr + _NEWLINE;
+      auxStr := auxStr + 'City = ' +
+        VartoStr(ItsWSXMLGetNodeValue(ItsWSXMLFindNode(aXMLNode, 'City')));
+      auxStr := auxStr + _NEWLINE;
+      auxStr := auxStr + 'WeatherStationCity = ' +
+        VartoStr(ItsWSXMLGetNodeValue(ItsWSXMLFindNode(aXMLNode, 'WeatherStationCity')));
+      auxStr := auxStr + _NEWLINE;
+      auxStr := auxStr + 'WeatherID = ' +
+        VartoStr(ItsWSXMLGetNodeValue(ItsWSXMLFindNode(aXMLNode, 'WeatherID')));
+      auxStr := auxStr + _NEWLINE;
+      auxStr := auxStr + 'Description = ' +
+        VartoStr(ItsWSXMLGetNodeValue(ItsWSXMLFindNode(aXMLNode, 'Description')));
+      auxStr := auxStr + _NEWLINE;
+      auxStr := auxStr + 'Temperature = ' +
+        VartoStr(ItsWSXMLGetNodeValue(ItsWSXMLFindNode(aXMLNode, 'Temperature')));
+      auxStr := auxStr + _NEWLINE;
+      auxStr := auxStr + 'RelativeHumidity = ' +
+        VartoStr(ItsWSXMLGetNodeValue(ItsWSXMLFindNode(aXMLNode, 'RelativeHumidity')));
+      auxStr := auxStr + _NEWLINE;
+      auxStr := auxStr + 'Wind = ' +
+        VartoStr(ItsWSXMLGetNodeValue(ItsWSXMLFindNode(aXMLNode, 'Wind')));
+      auxStr := auxStr + _NEWLINE;
+      auxStr := auxStr + 'Pressure = ' +
+        VartoStr(ItsWSXMLGetNodeValue(ItsWSXMLFindNode(aXMLNode, 'Pressure')));
+      auxStr := auxStr + _NEWLINE;
+      auxStr := auxStr + 'Visibility = ' +
+        VartoStr(ItsWSXMLGetNodeValue(ItsWSXMLFindNode(aXMLNode, 'Visibility')));
+      auxStr := auxStr + _NEWLINE;
+      auxStr := auxStr + 'WindChill = ' +
+        VartoStr(ItsWSXMLGetNodeValue(ItsWSXMLFindNode(aXMLNode, 'WindChill')));
+      auxStr := auxStr + _NEWLINE;
+      auxStr := auxStr + 'Remarks = ' +
+        VartoStr(ItsWSXMLGetNodeValue(ItsWSXMLFindNode(aXMLNode, 'Remarks')));
+
+      ItsInfo(auxStr);
+    end;
+  finally
+    WS.Free;
+  end;
+end;

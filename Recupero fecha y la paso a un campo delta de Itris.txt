@@ -1,0 +1,7 @@
+begin
+
+  Fec := ItsExecuteFlQuery('select getdate() as FECHA ');
+  ItsFlWCurValue(Delta, 'FEC_HAS', Fec);
+  ItsFlWCurValue(Delta, 'FEC_DES', Fec);
+
+end;

@@ -1,0 +1,15 @@
+CUENTS  TARJETAS	IMP TIPO	OBSERVACIONES
+232		46546      210  DEBE	10 cuotas de $150
+
+if ActFieldName = 'FK_ERP_CUPONES' then begin
+  if ItsFlCurValue(delta, 'FK_ERP_CUPONES') <> 0 '' then begin
+    dsCup := ItsDsOpneQuery ('select * from erp_cupones where id = ' + itsflAsSqlStr(delta, 'FK_ERP_CUPONES') );
+	while not dsCup.Eof do begin
+	  obs := itsflAsString(dsCup, 'CUOTA') + ' de ' + itsflAsSqlStr(dsCup, '....') + ' chau ';
+	  ItsFlWCurValue(Delta, 'OBSERVACIONES', obs);
+	
+	end;	
+  
+  end;
+
+end;

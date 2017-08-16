@@ -1,0 +1,27 @@
+begin
+  {obtener mails de los destinatarios por empresa}
+  dsContactos := ItsDsOpenQuery(
+    'select FK_ERP_EMPRESAS, EMAIL '+
+    'from ERP_CONTACTOS '+
+    'where EMAIL <> '''' and (_REC_NOV = 1 or IDD = ' + ItsFlAsSqlStr(Delta, 'FK_CONTACTOS') + ') and ' +
+    '      FK_ERP_EMPRESAS = ' + ItsFlAsSqlStr(Delta, 'FK_CLIENTES') );
+
+  Empresa := ItsFlCurValue(dsContactos, 'FK_ERP_EMPRESAS');
+
+  Mails := '';
+  while not dsContactos.Eof do begin
+    if Mails <> '' then
+      Mails := Mails + ';';
+
+    Mails := Mails + ItsFlCurValue(dsContactos, 'EMAIL');
+    dsContactos.Next;
+
+    if (dsContactos.Eof = True) or (ItsFlCurValue(dsContactos, 'FK_ERP_EMPRESAS') <> Empresa) then begin
+      Titulo := 'Novedad # '+ IntToStr(ItsFlCurValue(Delta, 'ID'));
+      Cuerpo := '" ' + (ItsFlCurValue(Delta, 'DESCRIPCION')) + ' "' + _NewLine;
+      ItsMapiSendMail(Mails, Titulo, Cuerpo, '', False);
+      Empresa := ItsFlCurValue(dsContactos, 'FK_ERP_EMPRESAS');
+      Mails := '';
+    end;
+  end;
+end;

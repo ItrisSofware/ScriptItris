@@ -1,0 +1,38 @@
+begin
+
+  sql := ('select CASE WHEN day (getdate()) >= 1 AND day (getdate()) < 20 THEN 'A' ELSE 'B' END as DIA');
+
+    ItsExecuteCommand(Sql);
+
+         //Si es A es del 1 al 20.
+         if sql = 'A' then
+                 {SucUsu := ItsExecuteFlQuery('select FK_ERP_SUCURSALES from ITRIS_USERS where USERNAME = ' + QuotedStr(ActUserName));}
+                  MesGraNueve := ('select MES_GRA from erp_pla_fin where ID = '9' ');
+                  MesGraTrece := ('select MES_GRA from erp_pla_fin where ID = '13' ');
+                  MesGraDieSeis := ('select MES_GRA from erp_pla_fin where ID = '16' ');
+
+                  ValorResta := 1;
+                    MesNueve := MesGraNueva - ValorResta;
+                    MesTrece := MesGraTrece - ValorResta;
+                    MesSeis := MesGraDieSeis - ValorResta;
+
+                    ItsExecuteFlQuery('UPDATE ERP_PLA_FIN set MES_GRA = ' + MesNueve + ' where id = '9' ');
+                    ItsExecuteFlQuery('UPDATE ERP_PLA_FIN set MES_GRA = ' + MesTrece + ' where id = '13' ');
+                    ItsExecuteFlQuery('UPDATE ERP_PLA_FIN set MES_GRA = ' + MesSeis + ' where id = '16' ');
+
+         //Si es B es del 20 a 31
+         if sql =  'B' then
+                  MesGraNueve := ('select MES_GRA from erp_pla_fin where ID = '9' ');
+                  MesGraTrece := ('select MES_GRA from erp_pla_fin where ID = '13' ');
+                  MesGraDieSeis := ('select MES_GRA from erp_pla_fin where ID = '16' ');
+
+                  ValorSuma := 1;
+                    MesNueveS := MesGraNueva + ValorSuma;
+                    MesTreceS := MesGraTrece + ValorSuma;
+                    MesSeisS := MesGraDieSeis + ValorSuma;
+
+                    ItsExecuteFlQuery('UPDATE ERP_PLA_FIN set MES_GRA = ' + MesNueveS + ' where id = '9' ');
+                    ItsExecuteFlQuery('UPDATE ERP_PLA_FIN set MES_GRA = ' + MesTreceS + ' where id = '13' ');
+                    ItsExecuteFlQuery('UPDATE ERP_PLA_FIN set MES_GRA = ' + MesSeisS + ' where id = '16' ');
+
+end;

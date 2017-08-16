@@ -1,0 +1,40 @@
+SQL := "select 1 from _TEMP_ERP_DET_GUI_TRA where (ItsFlCurvalue,'FK_ERP_GUI_TRA')";
+
+Result := ItsExecutecommand(SQL);
+
+if (Result = 1) then
+
+
+actualizo := "update _TEMP_ERP_DET_GUI_TRA set _BULTOS = (itsflcurvalue, '_BULTOS') where IDD = (ItsFlcurvalue, 'IDD')"
+refresh := ItsExecutecommand(actualizo);
+ItsInfo (Actualizaste tu reporte de impresión.)
+
+end;
+
+else then
+
+insertar := (
+insert into _TEMP_ERP_DET_GUI_TRA 
+(IDD,
+FK_ERP_GUI_TRA,
+FK_ERP_COM_VEN,
+ESTADO,
+OBSERVACIONES,
+_BULTOS,
+_CAMPOOCULTO,
+_TRANSPORTE
+)
+values
+(1,
+'GTR 000100000001',
+'FCRA001100000002',
+'E',
+'mis observaciones',
+1,
+1,
+12
+);)
+
+Result := ItsExecutecommand(insertar);
+
+end;

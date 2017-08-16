@@ -1,0 +1,2 @@
+C:\Program Files (x86)\Java\jre7\bin>keytool -v -list -keystore C:\Users\LEO\wor
+kspace\KeyStore\llave

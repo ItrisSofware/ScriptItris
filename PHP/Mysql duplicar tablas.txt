@@ -1,0 +1,24 @@
+Duplicando una tabla en Mysql
+Hay ocasiones en las que necesitamos hacer pruebas sobre una tabla que se encuentra en producción.
+
+Una forma rápida de hacer esa prueba sin afectar los datos, es hacer una copia de la tabla.
+
+En realidad, si tenemos tiempo siempre será más cómodo llevar esos datos a un entorno de staging para trabajar más tranquilos; vamos a pensar que 
+no tenemos tiempo… y mucho menos un entorno se staging.
+
+Si queremos duplicar nuestra tabla, sólo debemos ejecutar la siguiente instrucción:
+
+CREATE TABLE tabla_nueva LIKE tabla_original;
+De ésta forma. obtenemos una tabla idéntica en cuanto a estructura.
+
+Si necesitamos los datos de esa tabla en nuestra copia, insertamos todos los registros de la original de la siguiente forma:
+
+INSERT INTO tabla_nueva SELECT * FROM tabla_original;
+Al haber una correspondencia exacta en cuanto a las columnas y tipos de datos, los registros son insertados sin mayor problema.
+
+Hay una segunda forma de obtener el mismo resultado que las dos consultas previas. Podemos, con una sola instrucción, lograr la misma tabla.
+
+En este caso, debemos ejecutar:
+
+CREATE TABLE tabla_nueva SELECT * FROM tabla_original;
+Con esto, dos formas muy rápidas de duplicar una tabla y, si se quiere, sus datos.

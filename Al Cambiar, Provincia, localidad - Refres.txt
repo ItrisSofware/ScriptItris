@@ -1,0 +1,30 @@
+{LC} {#35816} {Pedidos de ventas, visualizar Localidad y Provincia de la dirección de entrega}
+begin
+  if ActFieldName = 'FK_ERP_DIR_ENTREGA' then begin
+    Lista := ItsExecuteFlQuery(
+      'select _FK_ERP_LIS_PRECIO from ERP_DIR_ENTREGA ' +
+      'where IDD = ' + ItsFlAsSqlStr(Delta, 'FK_ERP_DIR_ENTREGA') );
+    if Lista <> 0 then
+      ItsFlWCurValue(Delta, 'FK_ERP_LIS_PRECIO', Lista);
+
+    if ItsFlCurValue(Delta, 'FK_ERP_DIR_ENTREGA') <> 0 then begin
+      dsDirEnt := ItsDsOpenQuery('select FK_ERP_LOCALIDADES, FK_ERP_PROVINCIAS from ERP_DIR_ENTREGA where IDD = ' + ItsFlAsSqlStr(Delta, 'FK_ERP_DIR_ENTREGA'));
+      Loc := ItsExecuteFlQuery('select DESCRIPCION from ERP_LOCALIDADES where ID = ' + ItsFlAsSqlStr(dsDirEnt, 'FK_ERP_LOCALIDADES'));
+      Pro := ItsExecuteFlQuery('select DESCRIPCION from ERP_PROVINCIAS where ID = ' + ItsFlAsSqlStr(dsDirEnt, 'FK_ERP_PROVINCIAS'));
+      ItsFlWCurValue(Delta, '_PRO_DIR_ENT', Pro);
+      ItsFlWCurValue(Delta, '_LOC_DIR_ENT', Loc);
+    end;
+    else begin
+        dsDirEnt := ItsDsOpenQuery(
+          'select FK_ERP_LOCALIDADES, FK_ERP_PROVINCIAS from ERP_EMPRESAS where ID = ' + ItsFlAsSqlStr(Delta, 'FK_ERP_EMPRESAS'));
+        Loc := ItsExecuteFlQuery('select DESCRIPCION from ERP_LOCALIDADES where ID = ' + ItsFlAsSqlStr(dsDirEnt, 'FK_ERP_LOCALIDADES'));
+        Pro := ItsExecuteFlQuery('select DESCRIPCION from ERP_PROVINCIAS where ID = ' + ItsFlAsSqlStr(dsDirEnt, 'FK_ERP_PROVINCIAS'));
+
+        ItsFlWCurValue(Delta, '_PRO_DIR_ENT', Pro);
+        ItsFlWCurValue(Delta, '_LOC_DIR_ENT', Loc);
+
+    end;
+
+  end;
+
+end;

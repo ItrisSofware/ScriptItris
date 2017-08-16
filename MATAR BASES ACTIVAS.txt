@@ -1,0 +1,5 @@
+//Leo las bases activas. Una vez que veo el ID, ejecuto la próxima sentencia.
+SP_WHO2
+
+// mato la conexión activa.
+KILL 12

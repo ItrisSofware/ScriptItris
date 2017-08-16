@@ -1,0 +1,11 @@
+select 
+fk_erp_t_com_Ven, sum(imp_total) as total
+from erp_Com_ven
+group by fk_erp_t_com_Ven
+having sum(imp_total)  <> 0
+
+
+//Ejemplo de uso: Acá le digo que me muestre únicamente los valores distinto de 0 (cero).
+
+having sum(case when T.TIPO = 'D'  or (C.AFE_TES = 1 and T.TIPO_DOC = 'C') then C.IMP_TOTAL else 0 end - 
+      case when ( C.AFE_TES = 1 and T.TIPO_DOC <> 'V' )  or T.TIPO = 'C' then C.IMP_TOTAL else 0 end) <> 0

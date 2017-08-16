@@ -1,0 +1,32 @@
+begin
+  if UpDateKind <> UkDelete then begin
+
+        SucUsu := ItsExecuteFlQuery ('select fk_erp_sucursales from ITRIS_USERS where username  = ' + QuotedStr(ActUserName));
+
+        //Dia := ItsGetDay(now);
+
+
+
+        Dia := ItsExecuteFlQuery (
+                                    ' SELECT CASE ' +
+                                    ' when DATEPART(dw,getdate()) = 1 then 1 when ' +
+                                    ' DATEPART(dw,getdate()) = 2 then 2 ' +
+                                    ' when DATEPART(dw,getdate()) = 3 then 3 ' +
+                                    ' when DATEPART(dw,getdate()) = 4 then 4 ' +
+                                    ' when DATEPART(dw,getdate()) = 5 then 5 ' +
+                                    ' when DATEPART(dw,getdate()) = 6 then 6 ' +
+                                    ' when DATEPART(dw,getdate()) = 7 then 7 ' +
+                                    ' END ' );
+
+         HoraQueDebo := ItsExecuteFlQuery ('Select HORA_MIN from _ERP_CIE_DIA_SUC ' +
+                                       ' where DIA = ' + QuotedStr(Dia) + ' and FK_ERP_SUCURSALES = ' + QuotedStr(SucUsu) );
+
+         //HoraQueQuiero := ItsExecuteFlQuery ('select convert(varchar, getdate(), 108)  ');
+
+        HoraQueQuiero := ItsExecuteFlQuery ('select convert(varchar, getdate(), 108) ');
+
+
+     if HoraQueQuiero < HoraQueDebo   then
+       ItsRollBack ('Hoy tenés que cerrar la caja luego de las ' + QuotedStr(HoraQueDebo) );
+  end;
+end;

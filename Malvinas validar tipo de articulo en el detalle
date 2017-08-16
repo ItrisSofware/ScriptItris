@@ -1,0 +1,33 @@
+{LC} {#36008} {Validar el detalle de comprobantes si existen artículos tipo flete, validar campos...}
+begin
+  Fec := ItsFlCurValue(Delta, 'FECHA');
+  FecEnt := ItsFlCurValue(Delta, 'FEC_ENTREGA');
+  DirEnt := ItsFlCurValue(Delta, 'FK_ERP_DIR_ENTREGA');
+  Expreso := ItsFlCurValue(Delta, 'FK_ERP_EXPRESOS');
+
+  dsDetCom := ItsDsGetDetail (Delta, 'ERP_DET_COM');
+
+    if Assigned(dsDetCom) then begin
+
+      ItsDsFirst(dsDetCom);
+        while not ItsDsEOF(dsDetCom) do begin
+
+             Art := ItsFlCurValue(dsDetCom, 'FK_ERP_ARTICULOS');
+
+
+             EsFlete := ItsExecuteFlQuery('select FLETE from ERP_ARTICULOS where ID = ' + ItsFlAsSqlStr(dsDetCom, 'FK_ERP_ARTICULOS') );
+
+             if(EsFlete = true)then begin
+               if(Fec = FecEnt)then
+                 ItsRollBack('Si tiene en el detalle de comprobantes artículos tipo flete, la fecha de entrega no debe ser igual a la fecha del comprobante.');
+             end;
+
+             if(EsFlete = true)then begin
+               if(DirEnt = 0)then
+                 ItsRollBack('Si tiene en el detalle de comprobantes artículos tipo flete, la dirección de entrega es obligatoria.');
+             end;
+           ItsDsNext(dsDetCom);
+        end;
+
+    end;
+end;

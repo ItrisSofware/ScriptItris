@@ -1,0 +1,13 @@
+Problemas técnicos encontrados y solucionado:(esto es quizá para agregarlo
+en el documento del desarrollador).
+
+- Cuando uso la función ItsMapisendmail (no puedo embeber HTML) debo usar
+texto plano usando como separador _NEWLINE
+
+'Texto inicial  ' +  _NEWLINE' +
+'Texto que hace un salto de línea ' +  _NEWLINE' +
+' Texto final ' + _NEWLINE;
+
+
+- Cuando uso la función ItssendMail (No funciona o no reconoce el
+_NEWLINE). Debo crear el HTML desde el evento.

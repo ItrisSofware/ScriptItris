@@ -1,0 +1,9 @@
+SELECT CASE 
+when DATEPART(dw,getdate()) = 1 then 'domingo' when
+ DATEPART(dw,getdate()) = 2 then 'Lunes'
+ when DATEPART(dw,getdate()) = 3 then 'Martes'
+ when DATEPART(dw,getdate()) = 4 then 'Miercoles'
+ when DATEPART(dw,getdate()) = 5 then 'Jueves'
+ when DATEPART(dw,getdate()) = 6 then 'Viernes'
+ when DATEPART(dw,getdate()) = 7 then 'sabado'
+ END

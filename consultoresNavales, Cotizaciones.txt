@@ -1,0 +1,16 @@
+begin
+  dsDetCom := ItsDsGetDetail (Delta, 'ERP_DET_COM');
+    if Assigned(dsDetCom) then
+      DsCotizaciones := ItsDsOpenQuery(' select top 1 M.CODIGO as codigo, C.COTIZACION as cotizacion ' +
+                                   ' from ERP_COTIZACIONES C ' +
+                                   ' join ERP_MONEDAS M on C.FK_ERP_MONEDAS = M.ID' +
+                                   ' where FECHA <= ' +  ItsFlAsSqlStr(Delta, 'FECHA') +
+                                   ' and FK_ERP_MONEDAS = ' + ItsFlAsSqlStr(dsDetCom, 'FK_ERP_MON_PRE') +
+                                   ' order by FECHA desc;');
+      ItsWriteLn(DsCotizaciones);
+      Moneda := ItsFlCurValue(DsCotizaciones,'codigo');
+      Cotizacion := ItsFlCurValue(DsCotizaciones,'cotizacion');
+
+      ItsFlWCurValue(Delta, '_FK_ERP_MONEDAS', Moneda);
+      ItsFlWCurValue(Delta, '_COTIZACIONES', Cotizacion);
+end;

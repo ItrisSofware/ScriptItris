@@ -1,0 +1,8 @@
+begin
+if (ItsFlCurValue(Delta, 'FK_ERP_T_COM_COM') = 'PAG')
+    then
+        begin
+ItsClassPrintReport('ERP_IMP_RETG', '_ERP_Ret_ganancias', 'NUM_COM', ItsFlCurValue(Delta,'NUM_COM') , True, True)
+ItsClassPrintReport('ERP_IMP_RETIB', '_ERP_Ret_IB Prz', 'NUM_COM', ItsFlCurValue(Delta,'NUM_COM') , True, True)
+end;
+end;

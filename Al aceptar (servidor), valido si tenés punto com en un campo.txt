@@ -1,0 +1,5 @@
+    If ItsFlCurValue(Delta, 'EMAIL') <> '' then Begin
+      PuntoCom:= Pos ('.com', ItsFlCurValue(Delta, 'EMAIL'));
+      If PuntoCom = 0 then
+        ItsRollBack('El dominio de E-mail es incorrecto, verifique si está definido el valor: .COM');
+    end;

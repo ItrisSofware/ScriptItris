@@ -1,0 +1,21 @@
+begin
+if UpDateKind = UkInsert then begin   
+ {if ItsFLCurValue(Delta, 'DESCUENTO') >= 1 then begin
+
+    Titulo := ItsExecuteFlQuery ('select T.LEYENDA from ERP_COM_VEN V ' +
+              ' join ERP_T_COM_VEN T on (V.FK_ERP_T_COM_VEN = T.ID) ' +
+              ' where  T.ID = ' + ItsFlAsSqlStr (Delta, 'FK_ERP_T_COM_VEN'));
+    }
+    Titulo := 'Ingreso de nuevo Rebate';
+
+    DirEntrega := ItsExecuteFlQuery ('select TSKDESCRIPTION from ITRIS_TASKS');
+
+    Cuerpo := ItsFlAsString(Delta, 'FECHA_INICIO') + _NewLine +
+      ItsFlAsString(Delta, 'FK_ERP_ARTICULO') + ' ' + ItsFlAsString(Delta, 'DES_ARTICULO') + _NewLine +
+      ItsFlAsString(Delta, 'FK_ERP_EMPRESAS') + ' ' + ItsFlAsString(Delta, 'DES_PROVEEDOR') + _NewLine +
+      DirEntrega + _NewLine +
+      ItsFlAsString(Delta, 'DESCUENTO') + _NewLine;
+
+    ItsMapiSendMail('rebate@gruponucleo.com.ar', Titulo, Cuerpo, '', True);
+  end;
+end;

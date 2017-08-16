@@ -1,0 +1,13 @@
+begin
+  if DirectoryExists('\\JEEP\Glo\Novedades') then begin
+    if ItsFlCurValue(Delta, 'ID') = 0 then begin
+      ItsErr('Primero acepte la novedad');
+      Exit;
+    end;
+
+    Dir := '\\JEEP\Glo\Novedades\' + ItsFlAsString(Delta, 'ID');
+    if DirectoryExists(Dir) = False then
+      CreateDir(Dir);
+    ItsExecuteFile(Dir, '');
+  end;
+end;

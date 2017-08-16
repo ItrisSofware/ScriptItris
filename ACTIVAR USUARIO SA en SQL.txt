@@ -1,0 +1,9 @@
+Primero debes cambiar el modo de autenticación de servidor, a “Modo de autenticación de Windows y Sql Server”
+luego ejecutar el siguiente script.
+
+
+
+ALTER login sa enable;
+go
+ALTER login sa WITH password='123';
+go

@@ -1,0 +1,11 @@
+begin
+ if Delta.Recordcount > 0 then begin
+
+       ItsValor := 0;
+       Act := ItsInputQuery('Nuevo Porcentaje', 'Va a actualizar los porcentajes del servicio ' + ItsFlAsString(Delta, 'FK_ERP_ART_SER') +' ingrese el valor' , ItsValor);
+       if Act = True then
+         ItsExecuteCommand('update ERP_SER_POR_ART set PORCENTAJE = '+  QuotedStr(ItsValor) +' where FK_ERP_ART_SER = '+ ItsFlAsSqlStr(Delta, 'FK_ERP_ART_SER') );
+
+    delta.Refresh;
+  end;
+end;

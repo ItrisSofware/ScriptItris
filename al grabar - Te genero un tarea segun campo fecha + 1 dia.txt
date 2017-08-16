@@ -1,0 +1,42 @@
+begin
+
+
+    if UpDateKind = UkInsert then begin
+      frmT := ItsFrmCreate('ITRIS_TASKS', False);
+      ItsFrmOpen(frmT);
+      frmT.Visible := False;
+      ItsFrmAppend(FrmT);
+      dsT := ItsFrmGetDataSet(frmT);
+      Cli := ItsExecuteFlQuery('select ID from ERP_EMPRESAS where ID = ' + ItsFlAsSqlStr(Delta, 'DES_PROVEEDOR'));
+      ItsFlWCurValue(dsT, 'TSKDESCRIPTION', 'Atención hoy debe terminar Rebate '+ Cli +' '+ ItsFlAsString(Delta, 'FK_ERP_ARTICULO'));
+      ItsFlWCurValue(dsT, 'TSKDATEBEGIN', ItsFlCurValue(Delta, 'FECHA_FIN')+1);
+      ItsFlWCurValue(dsT, 'FK_ITRIS_RESOURCES',29);
+      ItsFlWCurValue(dsT, 'TSKTIMEBEGIN', EncodeTime(08, 0, 0, 0));
+      ItsFlWCurValue(dsT, 'TSKALARM', TRUE );
+      ItsFlWCurValue(dsT, 'TSKALARM_MIN', 5 );
+      ItsFlWCurValue(dsT, 'FK_ITRIS_CLASSES', '_ES_REBATE');
+      ItsFlWCurValue(dsT, 'TSKCLAID', ItsFlCurValue(Delta, 'ID'));
+      ItsFrmAccept(FrmT);
+    end;
+
+    if UpDateKind = UkModify then
+      EstPpto := ' (Ppto. modificado)';
+    else
+      EstPpto := ' (Ppto. nuevo)';
+
+    frmT := ItsFrmCreate('ITRIS_TASKS', False);
+    ItsFrmOpen(frmT);
+    frmT.Visible := False;
+    ItsFrmAppend(FrmT);
+    dsT := ItsFrmGetDataSet(frmT);
+    ItsFlWCurValue(dsT, 'TSKDESCRIPTION', 'Alerta! mañana termina el Rebate '+ItsFlAsString(Delta, 'FK_ERP_ARTICULO')+' '+ItsFlAsString(Delta, 'DES_PROVEEDOR') + EstPpto);
+    ItsFlWCurValue(dsT, 'TSKALARM', TRUE );
+    ItsFlWCurValue(dsT, 'TSKDATEBEGIN', ItsFlCurValue(Delta, 'FECHA_FIN'));
+    ItsFlWCurValue(dsT, 'FK_ITRIS_RESOURCES',29);
+    ItsFlWCurValue(dsT, 'TSKTIMEBEGIN', EncodeTime(08, 0, 0, 0));
+    ItsFlWCurValue(dsT, 'TSKALARM_MIN', 5);
+    ItsFlWCurValue(dsT, 'FK_ITRIS_CLASSES', '_ES_REBATE');
+    ItsFlWCurValue(dsT, 'TSKCLAID', ItsFlCurValue(Delta, 'ID'));
+    ItsFrmAccept(FrmT);
+
+end;

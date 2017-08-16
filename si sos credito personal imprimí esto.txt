@@ -1,0 +1,11 @@
+
+sql := ( 'select 1 '+
+         'from ERP_CON_VEN '+
+         'where ID = ' + ItsFlAsSqlStr(Delta, 'FK_ERP_CON_VEN') + ' ' +
+         'and CREDITO = 1');
+
+var1 := ItsExecuteFlQuery(sql);
+
+if (var1 <> 0) then begin
+ItsClassPrintReport('ERP_IMP_FAC', '_ERP_IMP_FAC_LC', 'ID', ItsFlCurValue(Delta,'ID') , true, true)
+end;

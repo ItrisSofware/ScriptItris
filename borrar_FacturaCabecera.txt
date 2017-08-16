@@ -1,0 +1,81 @@
+
+Comprobantes que deben anularse
+La anulación de comprobantes no se encuentra habilitada para comprobantes electrónicos. La reversión de la operación se debe realizar por un contra movimiento.
+Pero para poder revertir la operación, por ejemplo una nota de crédito sobre una factura, la factura debe estar autorizada y tener el CAE correspondiente, de lo contrario, la nota de crédito no obtendrá el correspondiente CAE.
+
+Nota: el siguiente procedimiento es de uso excepcional y solo debe emplearse en los casos en que el comprobante no puede obtener el CAE y la causa que origina el rechazo por parte de AFIP no puede corregirse.
+
+Para esos casos, seguir el siguiente procedimiento:
+El tipo de comprobante FVE es el que tiene la factura original.
+El talonario 3112 genera factura electrónica.
+La factura A0001-00000015 posee un error que no permite ser autorizada ni corregida.
+
+El tipo de comprobante FAN es el que tendrá la factura reenumerada. Este tipo de comprobante NO debe afectar IVA.
+Se utilizará el número A9991-00000015
+Nota: cuando elija el nuevo número de comprobante, cambie el prefijo original.
+
+1-	Desmarcar la opción genera factura electrónica del talonario 3112.
+2-	Reenumere el comprobante rechazado indicando:
+tipo de comprobante actual: FVE
+número de comprobante actual:  A0001-00000015
+tipo de comprobante nuevo: FAN
+número de comprobante nuevo:  A9991-00000015
+Nota: Recuerde, cuando elija el nuevo número de comprobante, cambie el prefijo original.
+3-	Anule el comprobante FAN A9991-00000015, mediante la opción anulaciones de ventas.
+4-	En el talonario 3112 ponga como próximo número 15.
+5-	Vuelva a marcar que el talonario 3112 genera factura electrónica.
+6-	Genere el comprobante número 15 con la fecha correspondiente a la que reenumeró, aunque más no sea por $0,01.  Recuerde que AFIP verifica correlatividad de comprobantes en número y fecha, es decir, no pueden quedar huecos en la numeración y la fecha del comprobante debe ser siempre mayor o igual a la última autorizada.
+7-	En el talonario 3112 ponga como próximo número el que corresponda si luego del comprobante recién emitido hubiera otros.
+8-	El comprobante renumerado debe borrarse físicamente de la base.
+
+
+
+
+
+--1) Anular el comprobante, 
+--2) Completar el tipo y numero correspondiente y,
+--3) Ejecutar hasta el punto 1 para comprobar la existencia del comprobante, 
+--4) ejecutar el query entero.
+
+
+
+declare @TIPO varchar(100)
+declare @COMPROBANTE varchar(100)
+declare @REVERSION varchar(100)
+declare @ASICOM varchar(100)
+declare @ASIREV varchar(100)
+
+-- COMPLETAR EL TIPO Y NUMERO DE COMPROBANTE
+set @TIPO = 'RVE'
+set @COMPROBANTE = ' 000100005699'
+
+-- PRIMERO VERIFICAR SI EXISTE EL COMPROBANTE Y SI ESTÁ ANULADO. 
+Select RAZON_SOCIAL, * from ERP_COM_VEN WHERE FK_ERP_T_COM_VEN = @TIPO AND NUM_COM = @COMPROBANTE
+-- (1) 
+
+set @REVERSION = (Select NUM_COM from ERP_ANU_VEN where FK_ERP_COM_VEN like '%' + @COMPROBANTE and FK_ERP_T_COM_VEN = @TIPO)
+set @ASICOM = (select FK_ERP_ASIENTOS from ERP_ASI_TRA where TIP_COM = @TIPO and NUM_COM = @COMPROBANTE GROUP BY FK_ERP_ASIENTOS)
+set @ASIREV = (select FK_ERP_ASIENTOS from ERP_ASI_TRA where TIP_COM = 'REV' and NUM_COM = @REVERSION GROUP BY FK_ERP_ASIENTOS)
+
+
+delete ERP_COM_VEN where NUM_COM = @COMPROBANTE and FK_ERP_T_COM_VEN = @TIPO
+ 
+delete ERP_ANU_VEN where FK_ERP_COM_VEN like '%'+ @COMPROBANTE and FK_ERP_T_COM_VEN = @TIPO
+ 
+delete ERP_DET_TES where FK_ERP_COM_VEN like '%'+ @COMPROBANTE and TIP_COM = @TIPO
+ 
+delete ERP_DET_TES where   TIP_COM = 'REV' and NUM_COM = @REVERSION
+ 
+delete ERP_COM_TES  where  NUM_COM  = @REVERSION  and FK_ERP_T_COM_TES = 'REV'
+ 
+delete ERP_ASI_TRA where TIP_COM = @TIPO and NUM_COM = @COMPROBANTE
+ 
+delete ERP_ASI_TRA where TIP_COM = 'REV' and NUM_COM = @REVERSION
+ 
+delete ERP_ASIENTOS where ID= @ASICOM
+ 
+delete ERP_ASIENTOS where ID = @ASIREV
+ 
+delete ERP_DET_ASI where FK_ERP_ASIENTOS = @ASICOM
+ 
+delete ERP_DET_ASI where FK_ERP_ASIENTOS = @ASIREV

@@ -1,0 +1,2 @@
+(case when D.TIPO = 'E' then D.IMP_TOTAL else D.IMP_TOTAL * - 1 end) as IMP_TOTAL,
+En caso que el tipo de comprobante sea de tipo EGRESO entonces el IMP_TOTAL dejalo tal cual, sino no! IMP_TOTAL multiplicalo por -1 y dale salida como IMP_TOTAL.

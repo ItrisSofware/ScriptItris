@@ -1,0 +1,6 @@
+begin
+  if ActFieldName = 'ID' then begin
+  DNI := ItsFlCurvalue(delta, 'ID');
+         ItsFlWCurvalue(delta, 'NUM_DOC', DNI);
+  end;
+end;

@@ -1,0 +1,9 @@
+begin
+
+    if UpdateKind <> UkDelete then begin
+
+    if    (ItsFlCurValue (Delta, 'FK_ERP_CON_COM') <> '1' )and (ItsFlCurValue (Delta, 'FK_ERP_CON_COM') <> '2')and (ItsFlCurValue (Delta, 'FK_ERP_CON_COM') <> '3')and (ItsFlCurValue (Delta, 'FK_ERP_CON_COM') <> '4')and (ItsFlCurValue (Delta, 'FK_ERP_CON_COM') <> '5')and (ItsFlCurValue (Delta, 'FK_ERP_CON_COM') <> '11')and (ItsFlCurValue (Delta, 'FK_ERP_CON_COM') <> '12')and (ItsFlCurValue (Delta, 'FK_ERP_CON_COM') <> '13')and (ItsFlCurValue (Delta, 'FK_ERP_CON_COM') <> '14')and (ItsFlCurValue (Delta, 'FK_ERP_CON_COM') <> '15')and (ItsFlCurValue (Delta, 'FK_ERP_CON_COM') <> '16')and (ItsFlCurValue (Delta, 'FK_ERP_CON_COM') <> '17')and (ItsFlCurValue (Delta, 'FK_ERP_CON_COM') <> '18')and (ItsFlCurValue (Delta, 'FK_ERP_CON_COM') <> '19')and (ItsFlCurValue (Delta, 'FK_ERP_CON_COM') <> '20')and (ItsFlCurValue (Delta, 'FK_ERP_CON_COM') <> '21')and (ItsFlCurValue (Delta, 'FK_ERP_CON_COM') <> '59') then
+      ItsInfo ('Recuerde generar los vencimientos correspondientes.');
+
+end;
+end;

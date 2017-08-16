@@ -1,0 +1,3 @@
+begin
+  ItsFlWCurValue (delta, '_SALDO_CREDITO', (ItsFlCurValue(delta, '_DEUDA_ACTUAL') - (ItsFlCurValue(delta, 'IMPORTE'))));
+end;

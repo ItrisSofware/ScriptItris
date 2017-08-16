@@ -1,0 +1,8 @@
+begin
+    Saldo := ItsExecuteFlQuery('select  sum(I.IMPORTE)as Saldo from ERP_IMP_CUO_CRE I ' +
+                               'join ERP_CREDITOS C on C.ID = I.FK_ERP_CREDITOS ' +
+                               'where I.FK_ERP_CREDITOS = ' + ItsFlAsSqlStr(Delta, 'FK_ERP_CREDITOS'));
+    {ItsFlWCurValue (delta, '_SALDO_CREDITO', Saldo - (ItsFlCurValue(delta, 'IMPORTE')));}
+
+    ItsFlWCurvalue(delta, '_DEUDA_ACTUAL', Saldo);
+end;

@@ -1,0 +1,7 @@
+Leo,
+Lo primero que tenes que tener en cuenta si la tabla se Importa a casa central,  o Exporta hacia las sucursales.
+Si se Impota, al momento de generarse el registro en la sucursal, se tiene que poner el campo EST_EXP_SUC en 'A'.
+Si se Exporta, al momento de realizarse cualquier cambio en el registro (evento al aceptar) se graba FEC_ULT_ACT con la 
+variable "Now".
+Pasame mas detalle de la funcionalidad de esta nueva clase.
+Jose Luis

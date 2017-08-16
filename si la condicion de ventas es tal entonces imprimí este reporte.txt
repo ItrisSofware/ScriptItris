@@ -1,0 +1,3 @@
+if (ItsFlCurValue(Delta, 'FK_ERP_CON_VEN') = 99)  then begin
+ItsClassPrintReport('ERP_COM_VEN_FAC', 'Contrato de Mutuo(prz)', 'ID', ItsFlCurValue(Delta,'ID') , false, false)
+end;

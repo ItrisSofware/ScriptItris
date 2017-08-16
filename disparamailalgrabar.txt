@@ -1,0 +1,94 @@
+begin
+if (ErpSucursalUsuarioActivo <> 14) and (ErpSucursalUsuarioActivo <> 6) then exit;
+  DesTransportes := ItsExecuteFlQuery('select DESCRIPCION from ERP_TRANSPORTES where ID = ' +
+                      ItsFlAsSqlStr(Delta, 'FK_ERP_TRANSPORTES'));
+  Titulo := ItsExecuteFlQuery ('select T.LEYENDA from ERP_T_COM_VEN T where T.ID = ' + ItsFlAsSqlStr (Delta, 'FK_ERP_T_COM_VEN'));
+
+  Cuerpo := 'Fecha: ' + ItsFlAsString(Delta, 'FECHA') + _NewLine +
+    'Factura: ' + ItsFlAsString(Delta, 'NUM_COM') + _NewLine +
+    'Empresa: ' + ItsFlAsString(Delta, 'FK_ERP_EMPRESAS') +
+    '  -  ' + ItsFlAsString(Delta, 'RAZON_SOCIAL') + _NewLine +
+    'Transporte: ' + DesTransportes + _NewLine +
+    'Fecha de vencimiento: ' + ItsFlAsString(Delta, 'FEC_VEN') + _NewLine +
+    'Observaciones: ' + ItsFlAsString(Delta, 'OBSERVACIONES') + _NewLine +
+    'Importe total: ' + ItsFlAsString(Delta, 'IMP_TOTAL') + _NewLine + _NewLine;
+
+  dsDetCom := ItsDsGetDetail(Delta, 'ERP_DET_COM');
+  dsDetCom.First;
+  while dsDetCom.Eof = FALSE do begin
+    Cuerpo := Cuerpo + 'Artículo: ' + ItsFlAsString(dsDetCom, 'FK_ERP_ARTICULOS') + ' - ' +
+      ItsFlAsString(dsDetCom, 'DESCRIPCION') +
+      '    Cantidad: ' + ItsFlAsString(dsDetCom, 'CANTIDAD') +
+      '    Precio unit.: ' + ItsFlAsString(dsDetCom, 'PRECIO') +
+      '    Precio total: ' + ItsFlAsString(dsDetCom, 'IMP_TOTAL') + _NewLine;
+    dsDetCom.Next;
+  end;
+
+  dsDetImp := ItsDsGetDetail(Delta, 'ERP_DET_IMV');
+  dsDetImp.First;
+  while dsDetImp.Eof = FALSE do begin
+    DesAlicuotas := ItsExecuteFlQuery('select DESCRIPCION from ERP_ALICUOTAS where ID = ' +
+                      ItsFlAsSqlStr(dsDetImp, 'FK_ERP_ALICUOTAS'));
+    Cuerpo :=  Cuerpo + _NewLine + _NewLine + 'Alícuota: ' + DesAlicuotas +
+      '    Importe: ' + ItsFlAsString(dsDetImp, 'IMPORTE') + _NewLine;
+    dsDetImp.Next;
+  end;
+
+  SalCC := ItsExecuteFlQuery ('select sum(IMPORTE) from _ERP_SAL_VEN where FK_ERP_EMPRESAS = ' +
+    ItsFlAsSqlStr(Delta, 'FK_ERP_EMPRESAS'));
+  Cuerpo :=  Cuerpo + _NewLine +
+    'Saldo de cuenta corriente: ' + FloatToStr(SalCC);
+
+  if ErpSucursalUsuarioActivo = 14 then begin
+    dsConVen := ItsExecuteFlQuery ('select CONTADO from ERP_CON_VEN ' +
+             ' where  ID = ' + ItsFlAsSqlStr (Delta, 'FK_ERP_CON_VEN'));
+    if dsConVen = False then begin
+
+      dsSuc := ItsExecuteFlQuery ('select FK_ERP_SUCURSALES from ERP_EMPRESAS ' +
+        ' where  ID = ' + ItsFlAsSqlStr (Delta, 'FK_ERP_EMPRESAS'));
+      if dsSuc = 6 then begin
+
+        dsEMail := ItsDsOpenQuery ('select EMAIL from ITRIS_USERS where USERNAME = ' + QuotedStr('LUIS'));
+        if not ItsFlEmpty(dsEMail, 'EMAIL') then
+          ItsMapiSendMail(ItsFlCurValue(dsEMail, 'EMAIL'), Titulo, Cuerpo, '', True);
+{
+        dsEmpresas := ItsDsOpenQuery('Select EMAIL from ERP_EMPRESAS ' +
+          'where ID = ' + ItsFlAsSqlStr(Delta, 'FK_ERP_EMPRESAS'));
+}
+        dsEmpresas := ItsDsOpenQuery('select EMAIL from ERP_CONTACTOS '+
+                                     'where FK_ERP_EMPRESAS = ' + ItsFlAsSqlStr(Delta, 'FK_ERP_EMPRESAS') + ' ' +
+                                     '      and _COMERCIAL = 1');
+        if not ItsFlEmpty(dsEmpresas, 'EMAIL') then
+          ItsMapiSendMail(ItsFlCurValue(dsEmpresas, 'EMAIL'), Titulo, Cuerpo, '', True);
+
+        SqlText := 'select U.EMAIL from ERP_ASESORES A join ITRIS_USERS U on U.USERNAME = A.FK_ITRIS_USERS ' +
+                   'where A.ID = ' + ItsFlAsSqlStr(Delta, 'FK_ERP_ASESORES');
+
+        dsAsesores := ItsDsOpenQuery(SqlText);
+        if not ItsFlEmpty(dsAsesores, 'EMAIL') then
+          ItsMapiSendMail(ItsFlCurValue(dsAsesores, 'EMAIL'), Titulo, Cuerpo, '', True);
+
+      end;
+    end;
+  end;
+
+  if ErpSucursalUsuarioActivo = 6  then begin
+{
+    dsEmpresas := ItsDsOpenQuery('select EMAIL from ERP_EMPRESAS ' +
+      'where ID = ' + ItsFlAsSqlStr(Delta, 'FK_ERP_EMPRESAS'));
+}
+    dsEmpresas := ItsDsOpenQuery('select EMAIL from ERP_CONTACTOS '+
+                                 'where FK_ERP_EMPRESAS = ' + ItsFlAsSqlStr(Delta, 'FK_ERP_EMPRESAS') + ' ' +
+                                 '      and _COMERCIAL = 1');
+
+    if not ItsFlEmpty(dsEmpresas, 'EMAIL') then
+      ItsMapiSendMail(ItsFlCurValue(dsEmpresas, 'EMAIL'), Titulo, Cuerpo, '', True);
+
+    SqlText := 'select U.EMAIL from ERP_ASESORES A join ITRIS_USERS U on U.USERNAME = A.FK_ITRIS_USERS ' +
+               'where A.ID = ' + ItsFlAsSqlStr(Delta, 'FK_ERP_ASESORES');
+    dsAsesores := ItsDsOpenQuery(SqlText);
+
+    if not ItsFlEmpty(dsAsesores, 'EMAIL') then
+      ItsMapiSendMail(ItsFlCurValue(dsAsesores, 'EMAIL'), Titulo, Cuerpo, '', True);
+  end;
+end;

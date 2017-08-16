@@ -1,0 +1,14 @@
+begin
+     if (ActFieldName = 'PRE_LIS') or (ActFieldName = 'FK_ERP_ARTICULOS') or (ActFieldName = 'FK_ERP_LIS_PRECIO') then begin
+        Precio := ItsExecuteFlQuery('select PRECIO from ERP_PRE_VEN where FK_ERP_ARTICULOS = '+ ItsFlasSqlStr(Delta,'FK_ERP_ARTICULOS') +
+                                                            ' and FK_ERP_LIS_PRECIO = '+ItsFlasSqlStr(Delta,'FK_ERP_LIS_PRECIO'));
+        If Precio > 0 then begin
+            If ItsFlCurValue(Delta,'PRE_LIS') < Precio then begin
+                ItsFlWCurValue(Delta,'PRE_LIS',Precio);
+
+             {  If (ActFieldName = 'PRECIO') then
+                    ItsInfo('El precio para el Artìculo es menor al precio definido en Precios de Venta');}
+            end;
+        end;
+     end;
+end;

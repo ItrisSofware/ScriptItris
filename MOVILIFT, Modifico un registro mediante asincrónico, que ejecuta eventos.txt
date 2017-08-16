@@ -1,0 +1,12 @@
+begin
+  frmTipComOK := ItsFrmCreate('ERP_DET_INV', true);
+
+  ds := ItsFrmGetDataSet(frmTipComOk);
+frmTipComOk.Visible := false;
+  ds.First;
+  while not ds.Eof do begin
+    ItsFlWCurValue(ds, 'CAN_UNI', 0 );
+    ItsFrmAccept(frmTipComOk);
+    ds.Next;
+  end;
+end;

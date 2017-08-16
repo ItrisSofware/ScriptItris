@@ -1,0 +1,11 @@
+begin
+  if ActFieldName = 'FK_ERP_ARTICULOS' then begin
+    SQL := 'select SAL_DISP '+
+           'from ERP_SAL_STOCK '+
+           'where FK_ERP_ARTICULOS = ' + ItsFlAsSqlStr(Delta, 'FK_ERP_ARTICULOS');
+
+    Saldo := ItsDsOpenQuery(SQL);
+    ItsFlWCurValue(Delta, '_SAL_DISP', ItsFlCurValue(Saldo, 'SAL_DISP'));
+
+  end;
+end

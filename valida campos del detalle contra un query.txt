@@ -1,0 +1,20 @@
+
+{begin
+
+        dsDetCom := ItsDsGetDetail (Delta, 'ERP_DET_GUI_TRA');
+          if Assigned(dsDetCom) then
+
+     //Pregunto si el ID del comprobante ya existe en la clase, si es correcto que me devuelva 1.
+    sql := ItsExecuteFlQuery('select 1 from _TEMP_ERP_DET_GUI_TRA where FK_ERP_GUI_TRA = '+ ItsFlAsSqlStr(dsDetCom, 'FK_ERP_GUI_TRA'));
+
+    if sql = 1 then begin
+
+    dsDetCom.first
+    while not dsDetCom.first do begin
+
+
+    ItsInfo('No se puede insertar datos en una clave duplicada');
+
+
+         end;
+      end;}

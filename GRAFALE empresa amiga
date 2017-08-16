@@ -1,0 +1,10 @@
+_ERP_COM_VEN_PED_LC
+Al aceptar (cliente)
+
+begin
+  //Pregunto si el plan de financiación corresponde a Empresas Amigas
+  Amigas := ItsExecuteFlQuery('select _ERP_EMP_AMI from ERP_PLA_FIN ' +
+                              'where ID = ' + ItsFlAsSqlStr (delta, 'FK_ERP_PLA_FIN'));
+  if Amigas = True then
+       ItsRollBack('El plan de financiación seleccionado corresponde al tipo Comercio Amigo, tenés que completar el campo Comercio Amigo.');
+end

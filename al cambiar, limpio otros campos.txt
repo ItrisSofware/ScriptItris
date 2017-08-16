@@ -1,0 +1,10 @@
+begin
+  if ActFieldName = '_RETIRA_CLIENTE' then begin
+	if(ItsFlCurValue(delta, '_RETIRA_CLIENTE') = True) then begin
+         ItsFlWCurValue(delta, 'FK_ERP_DIR_ENTREGA', 0);
+         ItsFlWCurValue(delta, 'FK_ERP_TRANSPORTES', 0);
+	end;
+  end;
+end;
+
+//El valor que le paso a la función ItsFlWCurValue es 0 (cero) porque el ID de la tablas Foráneas es Numero, si fuera caracter el valor sería (comilla simple; comilla simple).

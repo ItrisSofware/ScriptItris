@@ -1,0 +1,14 @@
+begin
+  EsCre := ItsExecuteFlQuery('Select CREDITO from ERP_CON_VEN where ID = '+ ItsFlAsSqlStr (delta, 'FK_ERP_CON_VEN'));
+  Fec := ItsExecuteFlQuery('Select CONVERT(VARCHAR(10), GETDATE()+29, 103) AS [DD/MM/YYYY]');
+  If EsCre = True then begin
+    EsAnt := ItsExecuteFlQuery('Select ANTICIPO from ERP_PLA_FIN where ID = '+ ItsFlAsSqlStr (delta, 'FK_ERP_PLA_FIN'));
+      if EsAnt = True then
+        ItsFlWCurValue(delta, '_LEYENDA', 'En '+ ItsFlAsSqlStr (delta, 'CAN_CUOTAS')+
+                      ' cuotas de $ '+ ItsFlAsString(delta, 'IMP_CUOTA')+ ' con un anticipo de $ '+ ItsFlAsSqlStr (delta, 'IMP_CUO_ANT')+
+                      '. 1º Vencimiento '+ DateToStr(Fec));
+      else
+        ItsFlWCurValue(delta, '_LEYENDA', 'En '+ ItsFlAsSqlStr (delta, 'CAN_CUOTAS')+
+                      ' cuotas de $ '+ ItsFlAsString(delta, 'IMP_CUOTA')+'. 1º Vencimiento '+ DateToStr(Fec));
+  end;
+end;

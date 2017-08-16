@@ -1,0 +1,4 @@
+genrsa -out privada 2014
+
+
+req -new -key privada -subj "/C=AR/O=Leonardo Condori/CN=SERVER-PC/serialNumber=CUIT 20285546142" -out pedido

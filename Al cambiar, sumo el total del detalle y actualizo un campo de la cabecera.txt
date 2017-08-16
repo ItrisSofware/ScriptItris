@@ -1,0 +1,13 @@
+{#34802 by GT & LC}
+begin
+  if ActFieldName = '_DET_DEP_TER_CLI' then begin
+    Importe := 0;
+    dsDetComTer := ItsDsGetDetail (Delta, '_DET_DEP_TER_CLI');
+    ItsDsFirst(dsDetComTer);
+     while not ItsDsEOF(dsDetComTer) do begin
+         Importe := Importe + ItsFlCurvalue(dsDetComTer, 'IMPORTE');
+         ItsDsNext(dsDetComTer);
+    end;
+    ItsFlWCurValue(delta, 'IMP_A_CTA', Importe);
+  end;
+end;

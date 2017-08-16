@@ -1,0 +1,48 @@
+¿ Para que podría querer que mi USB sea Booteable? 
+- Basicamente se hace esto cuando se quiere instalar un sistema operativo (como Windows). Ya no seria necesario quemar el S.O en un DVD. Otro aspecto a destacar es que la instalacion desde un USB puede ser hasta tres veces mas rapido que desde un CD/DVD. En fin, aqui no gastas CDs/DVDs y si no tienes quemador, este tutorial te va servir mucho. 
+
+NOTA: Usa una memoria USB vacia, ya que este proceso elimina toda la informacion que pudieses tener en tu memoria USB. 
+
+EMPEZEMOS: 
+
+1. Insertamos la memoria USB y abrimos una ventana en DOS. Para esto damos click en "INICIO" luego en "EJECUTAR" y ahi digitamos "cmd" (sin las comillas) apretamos ENTER. Nos queda asi: 
+Hacer que el USB (Pendrive) sea booteable 
+
+
+2. En la ventana DOS (ventana negra) escribimos "Diskpart" (siempre y en adelante sin comillas) apretamos ENTER. Nos queda asi: 
+usb 
+
+
+3. A continuacion escribimos "List Disk" apretamos ENTER. Nos queda asi: 
+booteable 
+
+
+4. Alli nos ha aparecido una lista de "Discos" disponibles clasificados por numeros (Disco 0, Disco 1, Disco 2, etc) Tenemos que fijarnos cual es nuestra memoria USB. En la imagen tengo una memoria de 4gb (3853mb) que vendria a ser el Disco 5. Entonces a continuacion tecleamos "Select Disk 5" (cinco al final porque la memoria del ejemplo esta clasificado como Disco 5 pero ustedes tienen que poner el numero que corresponda) apretamos ENTER. Nos queda asi: 
+arranque 
+
+
+5. Luego digitamos "clean" apretamos ENTER y esperamos dos segundos. Nos queda asi: 
+Windows 
+
+
+6. Luego digitamos "create partition primary" apretamos ENTER. Nos queda asi: 
+Hacer que el USB (Pendrive) sea booteable 
+
+
+7. Luego digitamos "active" apretamos ENTER. Nos queda asi: 
+usb 
+
+
+8. A continuacion digitamos "format fs=fat32 quick" apretamos ENTER. Ahi va empezar a formatear la USB, hay que esperar que termine al 100%. Nos queda asi: 
+booteable 
+
+
+9. Luego tecleamos "assign" apretamos ENTER. Nos queda asi: 
+arranque 
+
+
+10. Por ultimo y para salir, digitamos "exit" apretamos ENTER y luego otra vez "exit" y ya tenemos nuestra memoria booteable. Lo unico que queda por hacer es arrastrar a la memoria USB todos los archivos que componen el programa (o el windows) que queremos bootear.   
+
+Tan util y tan sencillo no? Espero que este tutorial les haya servido. Si tienen algun problema comenten o manden MPs. 
+
+Saludos.

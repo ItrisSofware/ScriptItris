@@ -1,0 +1,22 @@
+ERP_CHE_TER_LEC
+Leer cheque con Magtek
+F6
+
+begin
+  CheqCod := '';
+  if ItsInputQuery( 'Lectora de cheque', 'Por favor pase el cheque por la lectora ' , CheqCod) then begin
+    Banco    := StrToIntDef(Copy(CheqCod,  2 ,  3 ), 0);
+    Sucursal := Copy(CheqCod,  5 ,  3 );
+    CP       := Copy(CheqCod,  8 ,  4 );
+    Numero   := Copy(CheqCod, 12 ,  8 );
+    Cuenta   := Copy(CheqCod, 21 , 10 );
+
+    ItsFlWCurValue(Delta,'FK_ERP_BANCOS',Banco);
+    ItsFlWCurValue(Delta,'SUCURSAL',Sucursal);
+    ItsFlWCurValue(Delta,'CP',CP);
+    ItsFlWCurValue(Delta,'NUMERO2',Numero);
+    ItsFlWCurValue(Delta,'CUE_BANCARIA',Cuenta);
+  end;
+   else
+    Itsinfo('Cheque no escaneado');
+end;

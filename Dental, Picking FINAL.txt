@@ -1,0 +1,60 @@
+{GT} {31955}
+{Si no tiene mas items para controlar, avisa y sale}
+{Un codigo de barra puede estar en varios lotes}
+{No controlar si el item no tiene lote}
+
+begin
+  dsDetCom := ItsDsGetDetail (Delta, 'ERP_DET_COM');
+  if (Assigned(dsDetCom)) then begin
+    Faltan := 0;
+    dsDetCom.first;
+    while not ItsDsEOF(dsDetCom) do begin
+      if (ItsFlCurValue(dsDetCom, '_PICKING') = False) and (ItsFlCurValue(dsDetCom, 'FK_ERP_IDENTIFICADORES') <> '') then
+        Faltan := Faltan + 1;
+      dsDetCom.Next;
+    end;
+    if Faltan = 0 then begin
+      ItsInfo('Se pickearon todos los items');
+      Exit;
+    end;
+
+    CodBar := '';
+    Ok := ItsInputQuery( 'Control por picking', 'Ingrese o lea el código de barras ' , CodBar);
+    if CodBar = '' then Ok := False;
+
+    while Ok = True do begin
+      dsDetCom.first;
+      Existe := false;
+      while (not ItsDsEOF(dsDetCom)) do begin
+        if (ItsFlCurValue(dsDetCom, 'FK_ERP_IDENTIFICADORES') <> '') then begin
+          Identificador := ItsFlAsSqlStr(dsDetCom, 'FK_ERP_IDENTIFICADORES');
+          CodBarIdentific := ItsExecuteFlQuery ('select _ERP_COD_BAR from ERP_IDENTIFICADORES where ID = ' + Identificador );
+
+          if CodBar = CodBarIdentific then begin                                                                                                
+            {si encuentra el codigo ya tildado avisa}
+            if (ItsFlCurValue(dsDetCom, '_PICKING') = true) then
+              ItsInfo('Código ya marcado')
+            else begin
+              Faltan := Faltan - 1;
+              ItsFlWCurValue(dsDetCom, '_PICKING', 1);
+              if Faltan = 0 then begin
+                ItsInfo('Se pickearon todos los items');
+                Exit;
+              end;
+            end;
+            Existe := true;
+          end;
+        end;
+
+        ItsDsNext(dsDetCom);
+      end;
+
+      if Existe = false then
+        ItsInfo('Código no encontrado');
+
+      CodBar := '';
+      Ok := ItsInputQuery( 'Control por picking', 'Ingrese o lea el código de barras ' , CodBar);
+      if CodBar = '' then Ok := False;
+    end;
+  end;
+end;

@@ -1,0 +1,6 @@
+begin
+ {ULTIMA LINEA DEL EVENTO: Actualizo fecha y hora de la actualizacion del registro}
+  if UpdateKind <> UkDelete then
+    ItsFlWCurValue(Delta,'FEC_ULT_ACT',now);
+
+end

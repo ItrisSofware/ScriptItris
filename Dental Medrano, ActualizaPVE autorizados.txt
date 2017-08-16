@@ -1,0 +1,102 @@
+
+begin
+
+  {Si esta abierto pedido de ventas no se ejecuta la acción}
+  frmPresupuesto := ItsFrmCreate('ERP_COM_VEN_COT', False);
+  if frmPresupuesto.Visible = 1 then begin
+    ItsInfo('Debe cerrar Presupuestos de ventas antes de ejecutar la acción');
+    exit;
+  end;
+
+  ItsSetUserInteraction(False);        
+
+//Deshabilito temporalmente el talonario Nº100 para que no Imprima, no selecciones impresora y no previsualice.
+    ItsExecuteCommand('update ERP_TALONARIOS set IMPRIME = 0 where ID = 100');
+    ItsExecuteCommand('update ERP_TALONARIOS set SEL_IMPRESORA = 0 where ID = 100');
+    ItsExecuteCommand('update ERP_TALONARIOS set PREVISUALIZA = 0 where ID = 100');
+    ItsWriteLn('update ITRIS_EVENTS set EVEACTIVE = 0 where EVNAME = ''_AS_COM_VEN_COT_ACEPTAR'' ');
+    ItsExecuteCommand('update ITRIS_EVENTS set EVEACTIVE = 0 where EVENAME = ''_AS_COM_VEN_COT_ACEPTAR'' ');
+
+
+  Sql := 'select FK_ERP_COM_VEN, D.IDD, P.PRECIO, P.FK_ERP_MONEDAS, D.FK_ERP_ARTICULOS ' +
+         'from ERP_DET_COM D ' +
+         'join ERP_PRE_VEN P on P.FK_ERP_ARTICULOS = D.FK_ERP_ARTICULOS and ' +
+         '                      P.FK_ERP_LIS_PRECIO = D.FK_ERP_LIS_PRECIO and ' +
+         '                      P.FK_ERP_COLORES = D.FK_ERP_COLORES ' +
+         'join ERP_COM_VEN C on C.ID = D.FK_ERP_COM_VEN and (C.ESTADO = ''A'') ' +
+         'join ERP_T_COM_VEN T on T.ID = C.FK_ERP_T_COM_VEN and T.TIPO_DOC in (''S'') ' +
+         'where D.CAN_FALTANTE > 0 and '+
+         'FK_ERP_T_COM_VEN = ''PVE'' and '+
+         '      ( D.PRE_LIS <> P.PRECIO or D.FK_ERP_MON_PRE <> P.FK_ERP_MONEDAS ) and ' +
+         '      not Exists( ' +
+         '      select *' +
+         '      from ERP_COM_VEN C2 ' +
+         '        join ERP_T_COM_VEN T on T.ID = C2.FK_ERP_T_COM_VEN and T.TIPO_DOC = ''P'' ' +
+         '        join ERP_DET_COM D on D.FK_ERP_COM_VEN = C2.ID ' +
+         '        join ERP_ARTICULOS A on A.ID = D.FK_ERP_ARTICULOS and ANTICIPO = 1 ' +
+         '      where D.FK_ERP_COM_VEN = C.ID ) ' +
+         'order by C.ID, D.IDD ';
+
+  ItsWriteLn(Sql);
+
+  dsPresupuestos := ItsDsOpenQuery(Sql);
+
+  //ItsSetUserInteraction(False);
+
+  // borrar el log
+
+ {Actualizo precios}
+  while not ItsDsEof(dsPresupuestos) do begin
+
+    Pedido := ItsFlCurValue(dsPresupuestos, 'FK_ERP_COM_VEN');
+
+    {Abro pedido como formulario}  
+    frmComVen := ItsCreateForm('ERP_COM_VEN_COT', 'ID', Pedido, False);
+
+    //ItsFrmOpen(frmComVen);
+    frmComVen.Visible := False;
+    dsComVen := ItsFrmGetDataSet(frmComVen);
+
+    dsDetCom := ItsDsGetDetail(dsComVen, 'ERP_DET_COM');
+    detCot := ItsFlCurValue(dsDetCom, 'FK_ERP_COM_VEN');
+    if detCot = Pedido then begin
+
+      while (not ItsDsEof(dsPresupuestos)) and (ItsFlCurValue(dsPresupuestos, 'FK_ERP_COM_VEN') = Pedido) do begin
+
+        if ItsDsLocate(dsDetCom, 'IDD', ItsFlCurValue(dsPresupuestos,'IDD')) then begin
+          ItsFlWCurValue(dsDetCom, 'PRE_LIS', ItsFlCurValue(dsPresupuestos,'PRECIO'));
+          ItsFlWCurValue(dsDetCom, 'FK_ERP_MON_PRE', ItsFlCurValue(dsPresupuestos,'FK_ERP_MONEDAS'));
+          ItsDsPost(dsDetCom);
+        end;
+
+        ItsDsNext(dsPresupuestos);
+      end;
+      try
+        ItsFrmAccept(frmComVen);
+      except
+        FechayHora := ItsExecuteFlQuery('select GETDATE()');
+        S := FechayHora + ' Error: ' + LastExceptionMessage;
+        ItsSaveFile( ItsCompleteFileName('ItsActualizaPVE','log'), S);
+      end;
+    end;
+    else
+          ItsDsNext(dsPresupuestos);
+    end;
+          ItsDsClose(dsPresupuestos);
+
+//Habilito nuevamente el talonario Nº100 para que Imprima, selecciones impresora y previsualice.
+  ItsExecuteCommand('update ERP_TALONARIOS set IMPRIME = 1 where ID = 100');
+     ItsWriteLn('update ERP_TALONARIOS set IMPRIME = 1 where ID = 100');
+
+  ItsExecuteCommand('update ERP_TALONARIOS set SEL_IMPRESORA = 1 where ID = 100');
+     ItsWriteLn('update ERP_TALONARIOS set SEL_IMPRESORA = 1 where ID = 100');
+
+  ItsExecuteCommand('update ERP_TALONARIOS set PREVISUALIZA = 1 where ID = 100')
+     ItsWriteLn('update ERP_TALONARIOS set PREVISUALIZA = 1 where ID = 100');
+
+      ItsExecuteCommand('update ITRIS_EVENTS set EVEACTIVE = 1 where EVENAME = ''_AS_COM_VEN_COT_ACEPTAR'' ');
+
+
+   ItsSetUserInteraction(True);
+   ItsInfo('Actualización satisfactoria');
+end;

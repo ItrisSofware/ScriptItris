@@ -1,0 +1,26 @@
+begin
+ItsProtectionAdm := CreateOleObject('ItsProAdm.ItsProtectionAdm');
+
+ItsProtectionAdm.ItsGenDatFile('TIP_LLAVE',
+
+ 'NUM_SERIE',
+
+'NUM_HL',
+
+'  RazonSocial',
+
+ ' ModCodStr',' ModDesStr', 'ModLicStr',' ModMenSQLStr', 'ModClaSQLStr',
+
+  'fecha',
+
+'fecha',
+
+  'ruta',
+
+'  ClasesBloqueadas',
+
+'  EsClasesBloqueada'
+
+);
+
+end;

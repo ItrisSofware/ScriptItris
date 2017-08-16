@@ -1,0 +1,13 @@
+Para ver si una variable está declarada usa isset
+
+If(isset($var))
+
+Para ver si una variable es nula usa:
+
+if(is_null($var))
+
+Para ver si una variable está vacía usa:
+
+if(empty($var))
+
+No hay donde perderse, saludos.

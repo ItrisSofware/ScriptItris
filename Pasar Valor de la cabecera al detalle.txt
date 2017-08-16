@@ -1,0 +1,6 @@
+begin
+
+  ItsFlWCurValue(Delta, 'FK_ERP_EMPRESAS', ItsFlCurValue(MasterDelta, 'FK_ERP_EMPRESAS'));
+  ItsFlWCurValue(Delta, 'FEC_EMI', ItsFlCurValue(MasterDelta, 'FECHA'));
+
+end;

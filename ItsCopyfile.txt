@@ -1,0 +1,6 @@
+begin
+//ItsCopyFile(FileNameFrom, FileNameTo : String; CopySubDir: boolean);
+ItsSaveFile('C:\TEST\aa.txt', '');
+
+ItsCopyfile('C:\sql.txt','C:\TEST\sql.txt', false);
+end;

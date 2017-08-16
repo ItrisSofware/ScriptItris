@@ -1,0 +1,29 @@
+begin
+  dsDetCom := ItsDsGetDetail (Delta, 'ERP_DET_COM');
+  if Assigned(dsDetCom) then
+    ItsCreateForm('ERP_ART_INT', 'ID', ItsFLCurValue(dsDetCom, 'FK_ERP_ARTICULOS'), False);
+end;
+
+Begin
+
+  frmAlta := ItsFrmCreate('ERP_EMP_ALT', False);
+  ItsFrmOpen(frmAlta);
+  dsfrmAlta := ItsFrmGetDataSet(frmAlta);
+  dsfrmAlta.Append;
+  Accept := ItsFrmShowModal(frmAlta);
+  if Accept = True then
+    ItsFlWCurValue(Delta, 'FK_ERP_EMPRESAS', ItsFlCurValue(dsfrmAlta, 'ID'));
+
+End
+
+
+
+begin
+  dsDetEmp := ItsDsGetDetail (Delta, ‘_ERP_DET_EMPRESAS’);
+    dsDetEmp.Firts;
+      while not dsDetEmp.Eof do begin
+          ItsExecuteCommand ( 'UPDATE ERP_COM_VEN SET _TIENE_DETALLE_AUT = 1 where ID = ' + ItsFlasSqlStr(dsDetCom,'ID') );
+      end;
+    dsDetEmp.Next;
+  
+end;

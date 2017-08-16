@@ -1,0 +1,11 @@
+begin
+  ItsCreateForm('_ERP_REI_ETI_FOCUS', 'FK_ERP_EMPRESAS', ItsFlCurValue(Delta, 'FK_ERP_EMPRESAS'), False);
+end;
+
+
+PED 
+
+ERP_T_COM_VEN
+
+
+

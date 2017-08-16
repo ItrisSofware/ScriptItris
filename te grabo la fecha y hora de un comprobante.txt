@@ -1,0 +1,6 @@
+begin
+    //if ActFieldName = ('ID') then begin
+    ActFec := ItsExecuteFlQuery('select getdate() as FECHA from ERP_PARAMETROS');
+    ItsFlWCurvalue(delta, '_ERP_FEC_ULT', ActFec);
+    ItsFlWCurvalue(delta, '_ERP_HOR_ULT', ActFec);
+end;

@@ -1,0 +1,5 @@
+begin
+  If ItsFlCurValue (delta, '_FK_PRE_ULT_COM') > 0 then
+    valor:= (ItsFlCurValue (delta, 'PRECIO') / ItsFlCurValue (delta, '_FK_PRE_ULT_COM'));
+    ItsFlWCurValue (delta, '_ERP_REN_ART', valor);
+end;

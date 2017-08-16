@@ -1,0 +1,14 @@
+{No funciono}
+{begin }
+
+  {Busco los remitos tipo RLI cuyo estado sea autorizados y los cumplo}
+
+{sql := ('update ' +
+        'ERP_COM_VEN set ESTADO = ''X'' '+
+        ' where FK_ERP_T_COM_VEN = ' + ItsFlAsSqlStr(Delta, 'CAMPO') +' and (ESTADO = ''P'' or ESTADO=''A'') ');
+                                   |{esto debo poner para tomar el 
+									valor seleccionado}               |									
+  ItsWriteLn(sql);
+ItsExecuteCommand(Sql);
+
+ End

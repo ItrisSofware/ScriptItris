@@ -1,0 +1,10 @@
+{Genera un backup en el directorio de backup por defecto del SQL con el nombre fisico de la base y la fecha}
+{Falta borrar los archivos fisicamente despues de x semanas}
+begin
+  Fecha := FormatDateTime('_yyyy_mm_dd_hh_mm', Now());
+  DbName := ItsExecuteFlQuery('select DB_NAME()');
+  Archivo := DbName + Fecha + '.BAK';
+//  Archivo := ItsCompleteFileName(DbName+Fecha, 'BAK');
+
+  ItsExecuteCommand('BACKUP DATABASE [' + DbName + '] TO DISK = ' + QuotedStr(Archivo) + ' WITH FORMAT');
+end;

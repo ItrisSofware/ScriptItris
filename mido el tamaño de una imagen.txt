@@ -1,0 +1,9 @@
+begin
+    if UpdateKind <> UkDelete then begin
+        //Pregunto si la foto pesa más de 15000 bytes no te dejo avanzar.
+       if (Length(ItsFlAsString(Delta, 'FOTO')) > '15000')  then
+       ItsRollBack ('¡Apa!...Pusiste una foto un poco grande...probá con algo más chico. Recomendado (340 * 296 px) y/o una imagen tipo PNG no más de (14500 Bytes). ');
+end;
+
+
+end; 

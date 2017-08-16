@@ -1,0 +1,4 @@
+begin
+      Filtro := 'FK_ERP_ARTICULOS in (select ID from ERP_ARTICULOS where HABILITADO = ''1'')';
+      ActFilters.AddExpressionFilter(Filtro);
+end;

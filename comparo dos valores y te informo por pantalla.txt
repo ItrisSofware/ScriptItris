@@ -1,0 +1,6 @@
+{Funciona bien
+    if (ItsFlCurValue (Delta, '_BULTO') > ItsFlCurValue (Delta, '_CAMPOOCULTO')) then
+      ItsInfo ('El campo bulto es mayor que el campo oculto.');
+
+
+end;  } 
