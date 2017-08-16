@@ -1,0 +1,49 @@
+F: File;
+begin
+  Archivo := ItsFlCurValue(Delta, 'ARCHIVO');
+
+  AssignFile(F, Archivo);
+  Reset(F);
+  S := ReadLn(F);
+  {00000001 = 1,8 string}
+  {2017-06-01 = 9,18 date}
+  { 12:59:31 = 19,27}
+  {0 = 28}
+
+  dsFic := ItsDsOpenTable('ERP_CH_FICHADAS', '1=0', '');
+
+  if not FileExists(Archivo) then
+    ItsRollBack('El archivo de fichadas '+ Archivo +' no existe');
+
+  while S <> '' do begin
+    Legajo := Copy(S,1,8);
+
+    Legajo := ItsVarAsInteger(Legajo);
+
+    Fecha  := EncodeDate(IntToStr(Copy(S,9,4)), Copy(S,14,2), Copy(S,17,2) );
+    Hora   := EncodeTime(Copy(S,20,2), Copy(S,23,2), Copy(S,26,2) , 0 );
+    Tipo   := Copy(S,28,1);
+    if Tipo =var '0' then Tipo := 'E';
+    if Tipo = '1' then Tipo := 'S';
+    Obs := '';
+
+    ItsDsAppend(dsFic);
+    dsLeg := ItsDsOpenQuery('select ID from ERP_LEGAJOS where ID = '+QuotedStr(Legajo));
+    if dsLeg.RecordCount > 0 then begin
+      ItsFlWCurValue(dsFic, 'FK_ERP_LEGAJOS', ItsFlCurValue(dsLeg,'ID') );
+    end; else begin
+      ItsFlWCurValue(dsFic, 'FK_ERP_LEGAJOS', 1 );
+      Obs := 'El número  ('+ Copy(S,1,8) +') no está asociado a ningún legajo. ';
+    end;
+
+    ItsFlWCurValue(dsFic, 'OBSERVACIONES', Obs);
+    ItsFlWCurValue(dsFic, 'FECHA', Fecha);
+    ItsFlWCurValue(dsFic, 'HORA', Hora);
+    ItsFlWCurValue(dsFic, 'TIPO', Tipo);
+    ItsDsPost(dsFic);
+
+    S := ReadLn(F);
+  end;
+
+  CloseFile(F);
+end;
