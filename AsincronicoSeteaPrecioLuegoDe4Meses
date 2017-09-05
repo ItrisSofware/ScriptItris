@@ -1,0 +1,26 @@
+{LC} {} {Luego de 4 meses dejo los precios en cero.}
+begin
+  dsPreVen := ItsDsOpenQuery('select TOP 5 ID, PRECIO, FEC_ULT_ACT, GETDATE() as HOY from ERP_PRE_VEN ' +
+                             'where ID in ( ' +
+                             'select ' +
+                             'ID  ' +
+                             'from ERP_PRE_VEN ' +
+                             'where datediff(MONTH, FEC_ULT_ACT, GETDATE()) > = 4  and PRECIO <> 0) ');
+
+  ItsSaveFile('C:\ITRISLOG\PRECIOSMAYORES4MESES\ItsLog.txt', '');
+  ItsSaveFile('C:\ITRISLOG\PRECIOSMAYORES4MESES\ItsLog.txt', '::::::::: INICIO DE ACTUALIZACION :::::::::');
+  ItsSaveFile('C:\ITRISLOG\PRECIOSMAYORES4MESES\ItsLog.txt', '');
+  ItsSaveFile('C:\ITRISLOG\PRECIOSMAYORES4MESES\ItsLog.txt', 'FECHA DE MODIFICACION: ' + ItsFlAsString(dsPreVen, 'HOY' ) + '.')
+
+  dsPreVen.First;
+  while not dsPreVen.Eof do begin
+    //ItsWriteLn(ItsFlCurValue(dsPreVen, 'ID') );
+    ItsSaveFile('C:\ITRISLOG\PRECIOSMAYORES4MESES\ItsLog.txt', 'ERP_PRE_VEN - Se altero el ID ' +  ItsFlAsString(dsPreVen, 'ID') + ', tenía esta fecha de últ. act. (' + ItsFlAsString(dsPreVen, 'FEC_ULT_ACT') + ') y tenía este precio ' + ItsFlAsString(dsPreVen, 'PRECIO') + '. ' );
+
+    ItsExecuteCommand('UPDATE ERP_PRE_VEN SET PRECIO = 0 where ID = '+ ItsFlAsString(dsPreVen, 'ID') );
+    dsPreVen.Next;
+  end;
+
+  ItsSaveFile('C:\ITRISLOG\PRECIOSMAYORES4MESES\ItsLog.txt', '');
+  ItsSaveFile('C:\ITRISLOG\PRECIOSMAYORES4MESES\ItsLog.txt', '::::::::: FIN DE ACTUALIZACION :::::::::');
+end;
