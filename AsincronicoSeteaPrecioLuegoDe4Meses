@@ -1,4 +1,4 @@
-{LC} {} {Luego de 4 meses dejo los precios en cero.}
+{LC} {} {Luego de 4 meses dejo los precios en cero. OJO SOLO ESTA LIMITADO A 5 REGISTROS}
 begin
   dsPreVen := ItsDsOpenQuery('select TOP 5 ID, PRECIO, FEC_ULT_ACT, GETDATE() as HOY from ERP_PRE_VEN ' +
                              'where ID in ( ' +
